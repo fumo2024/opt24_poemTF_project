@@ -182,31 +182,32 @@ class TransformerModel(nn.Module):
         self.init_weights()
 
     def forward(self, src, tgt):
-        # src_mask: [1, src_len, src_len]
-        src_mask = self.make_src_mask(src)
-        tgt_mask = self.make_trg_mask(tgt)
-
         src = self.src_emb(src)
         tgt = self.tgt_emb(tgt)
         src = self.pos_emb(src)
         tgt = self.pos_emb(tgt)
+
+        # src_mask: [1, src_len, src_len]
+        device = src.device
+        src_mask = self.make_src_mask(src, device)
+        tgt_mask = self.make_trg_mask(tgt, device)
 
         enc_out = self.encoderblock(src, src_mask)
         dec_out = self.decoderblock(tgt, enc_out, tgt_mask, src_mask)
         out = self.out(dec_out)
         return F.log_softmax(out, dim=-1)
     
-    def make_src_mask(self, src):
+    def make_src_mask(self, src, device):
         src_mask = (src != self.src_pad_idx).unsqueeze(1).unsqueeze(2)
         # (N, 1, 1, src_len)
-        return src_mask
+        return src_mask.to(device)
 
-    def make_trg_mask(self, trg):
+    def make_trg_mask(self, trg, device):
         N, trg_len = trg.shape
         trg_mask = torch.tril(torch.ones((trg_len, trg_len))).expand(
             N, 1, trg_len, trg_len
         )
-        return trg_mask
+        return trg_mask.to(device)
 
     def init_weights(self):
         """
@@ -225,8 +226,7 @@ class TransformerModel(nn.Module):
                 nn.init.constant_(m.weight, 1.0)
 
 def minitransformer():
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = TransformerModel(src_vocab_size=10, tgt_vocab_size=10, src_pad_idx=0, trg_pad_idx=0, model_dim=512, encoder_depth=3, decoder_depth=3, num_heads=8, ffn_dim=2048, qkv_bias=False, device=device, dropout=0., attn_drop_rate=0.)
+    model = TransformerModel(src_vocab_size=10, tgt_vocab_size=10, src_pad_idx=0, trg_pad_idx=0, model_dim=512, encoder_depth=3, decoder_depth=3, num_heads=8, ffn_dim=2048, qkv_bias=False, dropout=0., attn_drop_rate=0.)
     return model
 
 def poemTransformer(vocab_size):

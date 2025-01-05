@@ -13,6 +13,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 ###### 训练transformer模型 ######
 
 if __name__ == "__main__":
+    os.makedirs("models", exist_ok=True)  # 创建models文件夹
     d_model = 512   # 字 Embedding 的维度
     d_ff = 2048     # 前向传播隐藏层维度
     d_k = d_v = 64  # K(=Q), V的维度 
