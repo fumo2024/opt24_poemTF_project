@@ -5,7 +5,9 @@
 项目选题为"7 Transformer Pretraining"，介绍如下
 
 ```
-当今Transformer模型已成为众多大模型的首选架构，详细了解Transformer的结构细节有助于我们更好理解大模型的运作机理。该项目需要同学们从零搭建一个小规模Transformer模型，并训练其完成简单的任务。
+当今Transformer模型已成为众多大模型的首选架构，详细了解Transformer的结构细节有助于我们更好理解大模型的运作机理
+
+该项目需要同学们从零搭建一个小规模Transformer模型，并训练其完成简单的任务。
 ```
 
 任务要求：
