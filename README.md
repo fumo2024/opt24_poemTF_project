@@ -67,6 +67,8 @@
 
 - 根目录下，`train.py`用于训练，`predict.py`用于预测，`tokenizerTest.py`用于测试`tokenizer`
 
-3、开始训练:
+3、代码使用:
 
 使用`python3 train.py`即可开始训练，具体的参数可以参考相应代码。
+
+使用`python3 predict.py`开始预测模式，参数`--model`指定使用的模型参数，默认为测试时使用的参数。
