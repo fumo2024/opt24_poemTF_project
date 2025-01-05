@@ -29,10 +29,11 @@ if __name__ == "__main__":
     optimizer = optim.SGD(model.parameters(), lr=1e-3, momentum=0.99)
 
     model.to(device)
-    for epoch in range(10):
+    epoch_num = 10
+    for epoch in range(epoch_num):
         model.train()
         epoch_loss = 0
-        with tqdm(total=len(loader), desc=f'Epoch {epoch + 1}/{50}', unit='batch') as pbar:
+        with tqdm(total=len(loader), desc=f'Epoch {epoch + 1}/{epoch_num}', unit='batch') as pbar:
             for enc_inputs, dec_inputs, dec_outputs in loader:
                 # enc_inputs : [batch_size, src_len]  # dec_inputs : [batch_size, tgt_len] # dec_outputs: [batch_size, tgt_len] 
                 enc_inputs, dec_inputs, dec_outputs = enc_inputs.to(device), dec_inputs.to(device), dec_outputs.to(device)
