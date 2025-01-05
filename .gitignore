@@ -62,5 +62,6 @@ venv.bak/
 
 # specific
 plugins/
+plugins/bert-base-chinese
 *.json
 *.pth
