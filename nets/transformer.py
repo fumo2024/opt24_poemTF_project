@@ -182,15 +182,15 @@ class TransformerModel(nn.Module):
         self.init_weights()
 
     def forward(self, src, tgt):
-        src = self.src_emb(src)
-        tgt = self.tgt_emb(tgt)
-        src = self.pos_emb(src)
-        tgt = self.pos_emb(tgt)
-
         # src_mask: [1, src_len, src_len]
         device = src.device
         src_mask = self.make_src_mask(src, device)
         tgt_mask = self.make_trg_mask(tgt, device)
+
+        src = self.src_emb(src)
+        tgt = self.tgt_emb(tgt)
+        src = self.pos_emb(src)
+        tgt = self.pos_emb(tgt)
 
         enc_out = self.encoderblock(src, src_mask)
         dec_out = self.decoderblock(tgt, enc_out, tgt_mask, src_mask)
