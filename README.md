@@ -72,3 +72,20 @@
 使用`python3 train.py`即可开始训练，具体的参数可以参考相应代码。
 
 使用`python3 predict.py`开始预测模式，参数`--model`指定使用的模型参数，默认为测试时使用的参数。
+
+4、目前存在的问题:
+
+在进行预测的时候，对于句尾的判定表现不正常。
+
+在构建数据集时，本来打算以[SEP]作为句尾符号，跟在`。`之后，但是训练出来的模型并没有这样表现，而是在`。`之后继续输出`。`，
+所以为了输出美观，在`predict.py`中将`。`也作为了句尾结束符号，暂时不明白哪里出错了
+
+5、对于`git lfs`大文件存储:
+
+`github`对于大小超过`100MB`的文件有上传限制，所以对于本项目中的模型参数文件`*.pth`，使用`git lfs`进行管理。直接`git clone`项目仓库
+只会得到`*.pth`的指针，如果需要下载模型参数文件，需要使用`git lfs`(就像处理[bert-base-chinese](https://hf-mirror.com/google-bert/bert-base-chinese/tree/main)一样)
+
+```bash
+sudo apt-get install git-lfs
+git lfs pull
+```
