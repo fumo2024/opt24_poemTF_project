@@ -64,4 +64,4 @@ venv.bak/
 plugins/
 plugins/bert-base-chinese
 *.json
-*.pth
+models/

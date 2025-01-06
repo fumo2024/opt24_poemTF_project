@@ -18,9 +18,10 @@ def predict(model, tokenizer, enc_input, max_length):
     enc_input_tokenized = tokenizer.encode(enc_input, max_length=max_length, truncation=True)
     enc_input_tensor = torch.tensor(enc_input_tokenized).unsqueeze(0).to(device)  # 添加batch维度
 
-    dec_input = ""
-    dec_input_tokenized = tokenizer.encode(dec_input, max_length=max_length, truncation=True)
+    result = ""
+    dec_input_tokenized = tokenizer.encode(result, max_length=max_length, truncation=True)
     dec_input_tensor = torch.tensor(dec_input_tokenized).unsqueeze(0).to(device)  # 添加batch维度
+
 
     with torch.no_grad():
         for _ in range(max_length):
@@ -28,13 +29,17 @@ def predict(model, tokenizer, enc_input, max_length):
             next_token = outputs.argmax(dim=-1)[:, -2].item()# top1取词
             if next_token == tokenizer.sep_token_id:
                 break
-            dec_input_tensor = torch.cat([dec_input_tensor, torch.tensor([[next_token]]).to(device)], dim=1)
-    result = tokenizer.decode(dec_input_tensor.squeeze().tolist(), skip_special_tokens=True)
-    return result.replace(" ", "")
+            nestchar = tokenizer.decode([next_token], skip_special_tokens=True)
+            if nestchar == '。':
+                break
+            result += nestchar
+            dec_input_tokenized = tokenizer.encode(result, max_length=max_length, truncation=True)
+            dec_input_tensor = torch.tensor(dec_input_tokenized).unsqueeze(0).to(device)
+    return result
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Predict the next poem sentence using the trained Transformer model.")
-    parser.add_argument('--model', type=str, default='./models/model_epoch_4.pth', help='Path to the model file')
+    parser.add_argument('--model', type=str, default='./models/model_epoch_10.pth', help='Path to the model file')
     args = parser.parse_args()
 
     model_path = args.model
@@ -53,4 +58,5 @@ if __name__ == "__main__":
     while True:
         enc_input = input("请输入诗的前半句: ")
         result = predict(model, tokenizer, enc_input, max_length)
+        print(f"输入: {enc_input}")
         print(f"输出: {result}")
