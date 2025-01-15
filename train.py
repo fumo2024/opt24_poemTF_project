@@ -1,5 +1,6 @@
 import os
 from tqdm.autonotebook import tqdm
+import argparse
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -13,17 +14,24 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 ###### 训练transformer模型 ######
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="train Transformer model from scratch.")
+    parser.add_argument('--checkpoint', type=str, default=None, help='Path to the checkpoint file')
+    args = parser.parse_args()
+
+    checkpoint_path = args.checkpoint    
     os.makedirs("models", exist_ok=True)  # 创建models文件夹
-    d_model = 512   # 字 Embedding 的维度
-    d_ff = 2048     # 前向传播隐藏层维度
-    d_k = d_v = 64  # K(=Q), V的维度 
-    n_layers = 6    # 有多少个encoder和decoder
-    n_heads = 8     # Multi-Head Attention设置为8
+    # d_model = 512   # 字 Embedding 的维度
+    # d_ff = 2048     # 前向传播隐藏层维度
+    # d_k = d_v = 64  # K(=Q), V的维度 
+    # n_layers = 6    # 有多少个encoder和decoder
+    # n_heads = 8     # Multi-Head Attention设置为8
     
     dataset = PoetryDataset(split="train")
     loader = torch.utils.data.DataLoader(dataset, batch_size=8, shuffle=True)
     vocab_size = dataset.vocab_size 
     model = poemTransformer(vocab_size)
+    if checkpoint_path:
+        model.load_state_dict(torch.load(checkpoint_path, map_location=device, weights_only=True))
     
     criterion = nn.CrossEntropyLoss(ignore_index=0)     #忽略 占位符 索引为0.
     optimizer = optim.SGD(model.parameters(), lr=1e-3, momentum=0.99)
